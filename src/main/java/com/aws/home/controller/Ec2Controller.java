@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/ec2")
-public class EC2Controller {
+public class Ec2Controller {
 
     @GetMapping("/instance")
     public String DescribeInstance(){
