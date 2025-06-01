@@ -32,6 +32,17 @@ public class S3Controller {
        }
     }
 
+    @GetMapping("/list-objects")
+    public BaseHttpResponse GetListObjects(){
+        try{
+            List<Map<String, Map<String, List<Map<String, String>>>>> data = s3Service.GetListObjects();
+            return BaseHttpResponse.Ok(data);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return BaseHttpResponse.Fail();
+        }
+    }
+
     @PostMapping("/create-bucket")
     public BaseHttpResponse CreateNewBucket(@RequestParam RegionEnums reg, @RequestParam @Schema(example = "1-bucket-created-from-api") String bucketName){
         try{

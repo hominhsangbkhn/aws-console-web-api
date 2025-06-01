@@ -11,10 +11,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.waiters.S3Waiter;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class S3ServiceImplementation implements S3ServiceInterface{
@@ -48,6 +45,50 @@ public class S3ServiceImplementation implements S3ServiceInterface{
         }
 
         return rs;
+    }
+
+    @Override
+    public List<Map<String, Map<String, List<Map<String, String>>>>> GetListObjects() {
+        List<Map<String, Map<String, List<Map<String, String>>>>> data = new ArrayList<>();
+
+        for(Region reg: BaseConstants.LIST_REGIONS) {
+            S3Client client = (S3Client) context.getBean(reg.toString());
+            ListBucketsRequest awsBucketReq = ListBucketsRequest.builder().bucketRegion(reg.id()).build();
+            ListBucketsResponse awsBucketRes = client.listBuckets(awsBucketReq);
+
+            Map<String, Map<String, List<Map<String, String>>>> regionLst = new LinkedHashMap<>();
+
+            for(Bucket bk : awsBucketRes.buckets()){
+                Map<String, List<Map<String, String>>> bucketLst = new LinkedHashMap<>();
+                List<Map<String, String>> objLst = new ArrayList<>();
+
+                ListObjectsRequest awsReq = ListObjectsRequest.builder().bucket(bk.name()).build();
+                ListObjectsResponse awsRes = client.listObjects(awsReq);
+
+                List<S3Object> contents = awsRes.contents();
+
+                for(S3Object obj: contents){
+                    Map<String, String> item = new LinkedHashMap<>();
+
+//                    item.put("Region", reg.id());
+//                    item.put("Bucket Name", bk.name();
+                    item.put("Object Name", obj.key());
+                    item.put("Object Class", obj.storageClass().name());
+                    item.put("Object Size", obj.size().toString());
+
+                    objLst.add(item);
+                }
+
+                bucketLst.put(bk.name(), objLst);
+
+                regionLst.put(reg.id() , bucketLst);
+
+            }
+
+            data.add(regionLst);
+
+        }
+        return data;
     }
 
     public List<Map<String, String>> CreateBucket(String reg, String bucketName){

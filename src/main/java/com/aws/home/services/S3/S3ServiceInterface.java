@@ -8,5 +8,7 @@ import java.util.Map;
 public interface S3ServiceInterface {
     List<Map<String, String>> GetListBuckets();
 
+    List<Map<String, Map<String, List<Map<String, String>>>>> GetListObjects();
+
     List<Map<String, String>> CreateBucket(String reg, String bucketName);
 }
