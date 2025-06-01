@@ -55,3 +55,53 @@ Post-Assessment
 Course Summary and Resources
 
 I/ DynamoDB
+<details>
+  <summary>Click me</summary>
+
+### Heading
+1. Foo
+2. Bar
+    * Baz
+    * Qux
+
+### Some Javascript
+DAX (DynamoDB Accelerator) in AWS DynamoDB is a fully managed, highly available, in-memory cache for DynamoDB that delivers fast read performance for your applications. Here’s a summary:
+
+What is DAX?
+
+DAX stands for DynamoDB Accelerator.
+It is an in-memory caching service specifically designed for DynamoDB.
+DAX can deliver up to a 10x performance improvement—from milliseconds to microseconds—even at millions of requests per second.
+How does DAX work?
+
+DAX sits between your application and the DynamoDB table.
+When your application requests data, DAX checks if the data is in the cache:
+If yes, it returns the cached data (much faster).
+If no, it fetches the data from DynamoDB, returns it to your application, and stores it in the cache for future requests.
+DAX is suitable for read-heavy and bursty workloads.
+Key Features:
+
+Fully managed by AWS—no servers to manage.
+Highly available and fault-tolerant.
+Seamless integration with existing DynamoDB API calls (just change the SDK client).
+Supports eventual consistency only (not strongly consistent reads).
+Ideal for applications that require microsecond response times for read operations, such as real-time bidding, gaming leaderboards, and shopping carts.
+When to use DAX?
+
+Your application needs very low read latency.
+You have read-heavy workloads.
+You want to reduce the number of read capacity units consumed (lower cost).
+How to use DAX?
+
+Launch a DAX cluster in your AWS account.
+Update your application to use the DAX-compatible SDK client.
+Configure the client to point to your DAX cluster endpoint.
+Limitations:
+
+DAX does not cache write operations; all writes go straight to DynamoDB.
+Only supports eventually consistent reads.
+Additional cost beyond DynamoDB charges.
+Official Documentation:
+
+What is Amazon DynamoDB Accelerator (DAX)? (AWS Docs)
+</details>
