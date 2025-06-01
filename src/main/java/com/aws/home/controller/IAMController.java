@@ -1,5 +1,8 @@
 package com.aws.home.controller;
 
+import com.aws.home.response.http.BaseHttpResponse;
+import com.aws.home.services.IAM.IamServiceInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,27 +11,28 @@ import software.amazon.awssdk.services.iam.IamClient;
 import software.amazon.awssdk.services.iam.model.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/IAM")
+@RequestMapping("/iam")
 public class IAMController {
 
-    @GetMapping("/GetRolePolicy")
-    public String GetPolicy(){
-        Region region = Region.AWS_GLOBAL;
-        IamClient iam = IamClient.builder()
-                .region(region)
-                .build();
+    private final IamServiceInterface iamService;
 
-        listPolicies(iam);
-        return "Hello";
+    public IAMController(IamServiceInterface iamService) {
+        this.iamService = iamService;
     }
 
-    public static void listPolicies(IamClient iam) {
-        ListPoliciesResponse response = iam.listPolicies();
-        List<Policy> polList = response.policies();
-        polList.forEach(policy -> {
-            System.out.println("Policy Name: " + policy.policyName());
-        });
+    @GetMapping("/get-aws-polices")
+    public BaseHttpResponse GetPolicy(){
+        List<Map<String, String>> rs = iamService.GetListPolicies();
+        return BaseHttpResponse.Ok(rs);
     }
+
+    @GetMapping("/get-attached-user-polices")
+    public BaseHttpResponse GetAttachedUserPolicy(){
+        List<Map<String, String>> data = iamService.GetListAttachedPolicies();
+        return BaseHttpResponse.Ok(data);
+    }
+
 }
